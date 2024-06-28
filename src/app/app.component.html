@@ -1,0 +1,116 @@
+<div class="card">
+    <p-table #currencyTable [value]="currencies" [globalFilterFields]="['code', 'currency', 'mid']"
+        [loading]="isLoading" sortMode="multiple" responsiveLayout="scroll">
+        <!-- [paginator]="true" [rows]="10" -->
+        <ng-template pTemplate="caption">
+            <div class="p-fluid grid">
+                <div class=" col-12 md:col-4">
+                    <label for="date">Data kursu:</label>
+                    <span class="p-float-label">
+                        <p-calendar id="date" [(ngModel)]="date" dateFormat="yy-mm-dd" inputId="date"
+                            [minDate]="minDate" [maxDate]="today" (ngModelChange)="getCurrencies()"></p-calendar>
+                    </span>
+
+                </div>
+                <div *ngIf="currencies.length > 0" class="calcBtn col-12 md:col-4">
+                    <p-button type="text" (click)="calculateCurrency = true" icon="pi pi-wallet"
+                        label="Przeliczanie walut" ></p-button>
+                </div>
+                <div class=" col-12 md:col-4">
+                    <label for="search">Wyszukiwanie</label>
+                    <input pInputText id="search" type="text"
+                        (input)="currencyTable.filterGlobal($event.target.value, 'contains')"
+                        placeholder="Wyszukaj kod, nazwę lub kurs" />
+                </div>
+            </div>
+
+        </ng-template>
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="code">Kod<p-sortIcon field="code"></p-sortIcon>
+                </th>
+                <th pSortableColumn="currency">Nazwa<p-sortIcon field="currency"></p-sortIcon>
+                </th>
+                <th pSortableColumn="mid">Kurs<p-sortIcon field="mid"></p-sortIcon>
+                </th>
+
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-currency>
+            <tr>
+                <td>{{currency.code}}</td>
+                <td>{{currency.currency}}</td>
+                <td>{{currency.mid}}</td>
+
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="8">Brak kursów dla wskazanej daty.</td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+<p-sidebar [(visible)]="calculateCurrency" styleClass="p-sidebar-md">
+
+    <label for="dropdown-curr-from" class="block text-900 text-lg font-medium mb-2 ">Wybierz waluty i sprawdź kurs</label>
+    <p-dropdown id="dropdown-curr-from" class="block w-full mb-3 mt-3" [options]="currencies" [(ngModel)]="calcFrom"
+        appendTo="body" optionLabel="code">
+        <ng-template pTemplate="selectedItem">
+            <div class="dropdown-currency flex flex-wrap">
+                <div
+                    class="currency-flag currency-flag-{{calcFrom.code.toLowerCase()}} flex align-items-center justify-content-center font-bold m-2">
+                </div>
+                <div class="flex align-items-center justify-content-center font-bold m-2">{{calcFrom.code}}</div>
+                <div class="flex align-items-center justify-content-center font-bold m-2 ml-1">{{calcFrom.currency}}
+                </div>
+            </div>
+        </ng-template>
+
+        <ng-template let-currency pTemplate="item">
+            <div class="dropdown-currency flex flex-wrap">
+                <div
+                    class="currency-flag currency-flag-{{currency.code.toLowerCase()}} flex align-items-center justify-content-center font-bold m-2">
+                </div>
+                <div class="flex align-items-center justify-content-center font-bold m-2">{{currency.code}}</div>
+                <div class="flex align-items-center justify-content-center font-bold m-2">{{currency.currency}}</div>
+            </div>
+        </ng-template>
+    </p-dropdown>
+
+    <p-inputNumber id="fromLabel" class="w-full mb-3 mt-3" [(ngModel)]="calcFromVal" mode="decimal" prefix="Chcę wymienić " ></p-inputNumber>
+    <div class="flex flex-wrap">
+        <p-dropdown id="dropdown-curr-to" class="flex mb-3 mt-3" [options]="currencies" [(ngModel)]="calcTo"
+            appendTo="body" optionLabel="code">
+            <ng-template pTemplate="selectedItem">
+                <div class="dropdown-currency flex flex-wrap">
+                    <div
+                        class="currency-flag currency-flag-{{calcTo.code.toLowerCase()}} flex align-items-center justify-content-center font-bold m-2">
+                    </div>
+                    <div class="flex align-items-center justify-content-center font-bold m-2">{{calcTo.code}}</div>
+                    <div class="flex align-items-center justify-content-center font-bold m-2 ml-1">{{calcTo.currency}}
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template let-currency pTemplate="item">
+                <div class="dropdown-currency flex flex-wrap">
+                    <div
+                        class="currency-flag currency-flag-{{currency.code.toLowerCase()}} flex align-items-center justify-content-center font-bold m-2">
+                    </div>
+                    <div class="flex align-items-center justify-content-center font-bold m-2">{{currency.code}}</div>
+                    <div class="flex align-items-center justify-content-center font-bold m-2">{{currency.currency}}
+                    </div>
+                </div>
+            </ng-template>
+        </p-dropdown>
+        <p-inputNumber class="flex w-full mb-3 mt-3" [disabled]="true" [(ngModel)]="calcToVal"
+            mode="decimal" prefix="Otrzymam "></p-inputNumber>
+    </div>
+
+
+    <label for="dropdown-curr-calc" class="block text-900 font-medium mb-2"></label>
+    <p-button type="text" (click)="calculate()" icon="pi pi-sort" label="Przelicz"></p-button>
+</p-sidebar>
+<p-toast position="bottom-right" key="toastMessages"></p-toast>

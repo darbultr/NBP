@@ -1,0 +1,35 @@
+@import "currency-flags\dist\currency-flags.min.css";
+
+* {
+  font-family: 'Roboto', Arial, sans-serif;
+  font-size: 13px;
+}
+
+body {
+  margin: 4px;
+  background-color: #f7f7f7;
+  height: 100vh;
+}
+
+a {
+  cursor: pointer;
+}
+
+
+@media screen and (max-width: 64em) {
+  .p-sidebar-left.p-sidebar-lg,
+  .p-sidebar-left.p-sidebar-md,
+  .p-sidebar-right.p-sidebar-lg,
+  .p-sidebar-right.p-sidebar-md {
+    width: 100% !important;
+  }
+
+
+    .p-dropdown {
+        width: 90vw;
+        font-weight: normal;
+    }
+    .p-inputnumber {
+        width: 90vh;
+    }
+}
